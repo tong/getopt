@@ -39,13 +39,13 @@ private typedef TAction = {
 }
 
 private class Options implements Dynamic {
-	//public var unkown
+	//public var unkown : Array
 	public function new() {
 	}
 }
 
 /**
-	Getopt style terminal parser.
+	Getopt style cli parser.
 */
 class Parser {
 	
@@ -247,13 +247,21 @@ class Parser {
 		
 	}
 	
-	/*
-	public static function get( t : String, matrix : String ) : Dynamic {
+	public static function get( t : String, matrix : String ) : Parser {
+		matrix = StringTools.trim( matrix );
+		matrix = ~/(\s+)/.replace( matrix, " " );
+		var sw = matrix.split( " " );
 		var p = new Parser( null );
-		//p.parse();
+		for( m in sw ) {
+			p.addOption( [m], storeTrue(m) );
+		}
+		p.parseString( t );
+		return p;
 	}
 	
-	public static function getSysArgs( t : String ) : Dynamic {
+	/*
+	public static function getArgs( matrix : String ) : Dynamic {
+		var args = neko.Sys.args();
 		return null;
 	}
 	*/

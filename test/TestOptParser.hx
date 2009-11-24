@@ -6,6 +6,8 @@ class TestOptParser extends haxe.unit.TestCase {
 	
 	function test() {
 		
+		// test simple argument reading
+		
 		var terminal = new opt.Parser( "TestOptParser.n" );
 		terminal.addOption( ["f"], store( "filename", TString ) );
 		
@@ -43,6 +45,8 @@ class TestOptParser extends haxe.unit.TestCase {
 		assertEquals( "myfile", terminal.opt.filename );
 		
 		
+		// test string reading
+		
 		terminal = new opt.Parser( "TestOptParser.n" );
 		terminal.addOption( ["s"], store( "another", TInt ) );
 		
@@ -58,15 +62,9 @@ class TestOptParser extends haxe.unit.TestCase {
 		terminal.parseString( "-s 24" );
 		assertFalse( terminal.opt.another==23 );
 		
-		//trace( Type.typeof(terminal.opt.another) );
-		//assertEquals(TInt, Type.typeof(terminal.opt.another) );
+
+		// test unregistered options
 		
-		/*
-		<yourscript> -f outfile --quiet
-		<yourscript> --quiet --file outfile
-		<yourscript> -q -foutfile
-		<yourscript> -qfoutfile
-		*/
 		terminal = new opt.Parser( "TestOptParser.n" );
 		
 		terminal.parseString( "-f outfile --quiet" );
@@ -97,8 +95,32 @@ class TestOptParser extends haxe.unit.TestCase {
 		assertEquals( null, terminal.opt.outfile );
 		
 		
-	//	var opts = opt.Parser.get( "-f -o -q", "foq"  );
-	//	trace(opts);
+		// test callback
+		
+		var cl = new opt.Parser( "TestOptParser.n" );
+		cl.addOption( ["s"], call( myCallback ) );
+		cl.parse( ["-s"] );
+		//..................
+		
+		
+		// test direct access
+		
+		var cl = opt.Parser.get( "-f -o -q", "foq" ).opt;
+		assertEquals( true, cl.f );
+		assertEquals( true, cl.o );
+		assertEquals( true, cl.q );
+		assertEquals( 3, Reflect.fields( cl ).length );
+		
+		var cl = opt.Parser.get( "  --f   ", "foq" ).opt;
+		assertEquals( true, cl.f );
+		assertEquals( 1, Reflect.fields( cl ).length );
+		
+		var cl = opt.Parser.get( "  --test   ", "foq test" ).opt;
+		assertEquals( true, cl.test );
+		assertEquals( 1, Reflect.fields( cl ).length );
+		
+		
+		// test help
 		
 		/*
 		terminal = new opt.Parser( "TestOptParser.n" );
@@ -108,18 +130,16 @@ class TestOptParser extends haxe.unit.TestCase {
 		terminal.description = "This is a testunit for opt.Parser.";
 		terminal.help();
 		*/
-		
-		trace( terminal.opt );
 	}
 	
 	function myCallback() {
+		trace("MYCALLBACK");
 	}
-	
+
 	static function main() {
 		var r = new haxe.unit.TestRunner();
 		r.add( new TestOptParser() );
 		r.run();
-		
 	}
 	
 }
