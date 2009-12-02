@@ -1,3 +1,12 @@
 
--neko test.n
+-neko bin/test.n
 -main test.TestOptParser
+
+--next
+-php bin
+--php-front test.php
+-main test.TestOptParser
+
+#--next
+#-cpp bin
+#-main test.TestOptParser

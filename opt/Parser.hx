@@ -40,12 +40,11 @@ private typedef TAction = {
 
 private class Options implements Dynamic {
 	//public var unkown : Array
-	public function new() {
-	}
+	public function new() {}
 }
 
 /**
-	Getopt style cli parser.
+	Getopt style CLI parser.
 */
 class Parser {
 	
@@ -54,6 +53,7 @@ class Parser {
 	public var actions : List<TAction>;
 	public var exe : String;
 	public var description : String;
+	//public var intro : String;
 	
 	var args : Array<String>;
 	var i : Int;
@@ -65,10 +65,25 @@ class Parser {
 	}
 	
 	/**
+		Generate/Print help.
 	*/
 	public function help() {
 		var b = new StringBuf();
-		b.add( "\n\nUsage = " );
+		b.add( "\n" );
+		/*
+		if( intro != null ) {
+			b.add( intro );
+			b.add( "\n" );
+		}
+		*/
+		if( description != null ) {
+			b.add( description );
+			//b.add( "\n" );
+			//for( i in 0...description.length )
+			//	b.add( "=" );
+			b.add( "\n" );
+		}
+		b.add( "\nUsage: " );
 		if( exe != null ) {
 			b.add( exe );
 			b.add( " " );
@@ -93,15 +108,10 @@ class Parser {
 				if( a.help != null ) {
 					b.add( a.help );
 				} else {
-					b.add( "undocumented." );
+					b.add( "??" );
 				}
 				b.add( "\n" );
 			}
-		}
-		b.add( "\n" );
-		if( description != null ) {
-			b.add( description );
-			b.add( "\n" );
 		}
 		b.add( "\n" );
 		Lib.print( b.toString() );
@@ -216,7 +226,7 @@ class Parser {
 			return;
 		case store(d,t) :
 			if( t == null ) {
-				trace("NUUUUUUUUUUUUUUUULLLLLLLLLL TYPE " );
+				//trace("NUUUUUUUUUUUUUUUULLLLLLLLLL TYPE " );
 				Reflect.setField( opt, d, s );
 				return;
 			}
@@ -229,7 +239,7 @@ class Parser {
 					throw "Missing argument value for: "+s;
 				v = args[i+1];
 				//TODO
-				v = ~/'(.+)'/g.replace( v, "$1" ); //unquote
+				v = ~/'(.+)'/g.replace( v, "$1" ); // unquote
 			}
 			switch( t ) {
 			case TInt :
@@ -247,14 +257,15 @@ class Parser {
 		
 	}
 	
+	/**
+	*/
 	public static function get( t : String, matrix : String ) : Parser {
 		matrix = StringTools.trim( matrix );
 		matrix = ~/(\s+)/.replace( matrix, " " );
 		var sw = matrix.split( " " );
 		var p = new Parser( null );
-		for( m in sw ) {
+		for( m in sw )
 			p.addOption( [m], storeTrue(m) );
-		}
 		p.parseString( t );
 		return p;
 	}
@@ -262,7 +273,7 @@ class Parser {
 	/*
 	public static function getArgs( matrix : String ) : Dynamic {
 		var args = neko.Sys.args();
-		return null;
+		return get();
 	}
 	*/
 	
