@@ -1,8 +1,7 @@
 
 GETOPT
 ======
-Utility to parse command line arguments.
-It supports the same conventions as the Unix getopt() function.
+Utility to parse command line arguments using same/similar conventions as the Unix getopt() function.
 
 
 USAGE
