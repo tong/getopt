@@ -1,0 +1,24 @@
+
+GETOPT
+======
+Utility to parse command line arguments.
+It supports the same conventions as the Unix getopt() function.
+
+
+USAGE
+-----
+
+# Create a instance of the parser
+var go = new Getopt();
+
+# Add command line options to parse
+# For example, to store a string value into the field 'f'
+go.addSwitch( ["f"], store( "filename", TString ) );
+
+# Parse an array of arguments (like returned by neko.Sys.args())
+go.parse( ["-f","myfile"] );
+# Or
+go.parseString( "-f myfile" );
+
+# Your value is now available at
+trace( go.opt.filename ); // myfile
